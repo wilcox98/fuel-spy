@@ -1,10 +1,12 @@
-import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from "react-leaflet";
+/* eslint-disable array-callback-return */
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
 import React from "react";
 import { Icon } from "leaflet";
 import fuel from "./../fuel-station.png";
 // import data from "./location.json";
 import mapData from "./interpreter.json";
+import { PriceModal } from "./PriceModal";
 
 export const MapView = ({
   zoom = 13,
@@ -36,36 +38,14 @@ export const MapView = ({
               }
             >
               <Popup>
-                <strong>{town.tags.brand ?? town.tags.name}</strong>
-                <p>{town.tags["addr:street"]}</p>
-                <p>{town.tags["addr:city"]}</p>
-                <div
-                  className="container alert alert-warning"
-                  style={{ width: 150 }}
-                >
-                  Petrol
-                  <h6>198.98</h6>
-                  Kerosene
-                  <h6>198.98</h6>
-                  Diesel
-                  <h6>198.98</h6>
-                </div>
-
-                <button type="button" class="btn btn-primary">
-                  Submit Prices
-                </button>
+                <PriceModal town={town}></PriceModal>
               </Popup>
             </Marker>
           );
         } else {
+          //   return <></>;
         }
       })}
-      {/* <Marker></Marker> */}
-      {/* {geoJSONData.map((data, index) => (
-        <GeoJSON key={index} data={data}>
-          <Popup></Popup>
-        </GeoJSON>
-      ))} */}
     </MapContainer>
   );
 };
