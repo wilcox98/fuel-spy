@@ -13,7 +13,7 @@ public class PetrolStationContext : DbContext
     public string DbPath { get; }
     public PetrolStationContext() : base()
     {
-        var folder = "/home/chefnoid/Desktop"
+        var folder = "/home/chefnoid/Desktop/learning/projects/"
         ;
         // var path = Environment.GetFolderPath(folder);
         DbPath = System.IO.Path.Join(folder, "stations.db");
@@ -66,9 +66,40 @@ public class PetrolStationContext : DbContext
             Petrol = 200,
             CreatedAt = DateTime.UtcNow,
         };
-        modelBuilder.Entity<Station>().HasData(station);
-        modelBuilder.Entity<Tag>().HasData(tag);
-        modelBuilder.Entity<FuelPrice>().HasData(fuelPrice);
+        Models.Station station1 = new()
+        {
+            StationId = 30092222,
+            LocationType = "node",
+            Lat = -1.3195401,
+            Lon = 36.8371639,
+
+            TagId = 30092222,
+            // FuelPriceId = id
+        };
+        Models.Tag tag1 = new()
+        {
+            TagId = 30092222,
+            City = "Nairobi",
+            Street = "Popo Rd/Mombasa Rd",
+            Amenity = "fuel",
+
+            Name = "OLA Energy",
+
+        };
+
+        FuelPrice fuelPrice1 = new FuelPrice
+        {
+            FuelPriceId = 30092222,
+            Id = id + 1,
+            StationId = 30092222,
+            Diesel = 2020,
+            Kerosene = 2200,
+            Petrol = 2020,
+            CreatedAt = DateTime.UtcNow,
+        };
+        modelBuilder.Entity<Station>().HasData(station, station1);
+        modelBuilder.Entity<Tag>().HasData(tag, tag1);
+        modelBuilder.Entity<FuelPrice>().HasData(fuelPrice, fuelPrice1);
     }
 
 
