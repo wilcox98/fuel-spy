@@ -11,8 +11,8 @@ using projects.Data;
 namespace projects.Migrations
 {
     [DbContext(typeof(PetrolStationContext))]
-    [Migration("20231116050120_AddFuelPricesTable")]
-    partial class AddFuelPricesTable
+    [Migration("20231117003130_ResetMigrations")]
+    partial class ResetMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,8 +22,9 @@ namespace projects.Migrations
 
             modelBuilder.Entity("projects.Models.FuelPrice", b =>
                 {
-                    b.Property<string>("FuelPriceId")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("TEXT");
@@ -31,6 +32,9 @@ namespace projects.Migrations
                     b.Property<double?>("Diesel")
                         .HasColumnType("REAL")
                         .HasAnnotation("Relational:JsonPropertyName", "diesel");
+
+                    b.Property<int>("FuelPriceId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<double?>("Kerosene")
                         .HasColumnType("REAL")
@@ -44,16 +48,19 @@ namespace projects.Migrations
                         .HasColumnType("INTEGER")
                         .HasAnnotation("Relational:JsonPropertyName", "stationId");
 
-                    b.HasKey("FuelPriceId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("StationId");
 
                     b.ToTable("FuelPrices");
 
                     b.HasData(
                         new
                         {
-                            FuelPriceId = "d0f6065b-e62b-4533-b81d-71fb15dd36f7",
-                            CreatedAt = new DateTime(2023, 11, 16, 5, 1, 20, 175, DateTimeKind.Utc).AddTicks(3068),
+                            Id = 1,
+                            CreatedAt = new DateTime(2023, 11, 17, 0, 31, 30, 422, DateTimeKind.Utc).AddTicks(7640),
                             Diesel = 200.0,
+                            FuelPriceId = 30092081,
                             Kerosene = 200.0,
                             Petrol = 200.0,
                             StationId = 30092081
@@ -148,6 +155,13 @@ namespace projects.Migrations
                         });
                 });
 
+            modelBuilder.Entity("projects.Models.FuelPrice", b =>
+                {
+                    b.HasOne("projects.Models.Station", null)
+                        .WithMany("FuelPrices")
+                        .HasForeignKey("StationId");
+                });
+
             modelBuilder.Entity("projects.Models.Station", b =>
                 {
                     b.HasOne("projects.Models.Tag", "Tag")
@@ -157,6 +171,11 @@ namespace projects.Migrations
                         .IsRequired();
 
                     b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("projects.Models.Station", b =>
+                {
+                    b.Navigation("FuelPrices");
                 });
 #pragma warning restore 612, 618
         }

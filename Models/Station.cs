@@ -11,9 +11,13 @@ public class Station
     [JsonPropertyName("lat")]
     public double Lon { get; set; }
     [JsonPropertyName("tags")]
-    public Tag? Tag { get; set; }
+    public virtual Tag? Tag { get; set; }
     // [JsonPropertyName("id")]
     public required int TagId { get; set; }
+
+    // [JsonPropertyName("id")]
+    // public required int FuelPriceId { get; set; }
+    public ICollection<FuelPrice> FuelPrices { get; } = new List<FuelPrice>();
 }
 public class Tag
 {
@@ -34,7 +38,8 @@ public class Tag
 }
 public class FuelPrice
 {
-    public string? FuelPriceId { get; set; }
+    public int? Id { get; set; }
+    public int FuelPriceId { get; set; }
     [JsonPropertyName("stationId")]
     public int? StationId { get; set; }
     [JsonPropertyName("diesel")]

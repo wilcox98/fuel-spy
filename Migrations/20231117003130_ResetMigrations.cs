@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace projects.Migrations
 {
     /// <inheritdoc />
-    public partial class SeedDatav2 : Migration
+    public partial class ResetMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,6 +51,29 @@ namespace projects.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "FuelPrices",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FuelPriceId = table.Column<int>(type: "INTEGER", nullable: false),
+                    StationId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Diesel = table.Column<double>(type: "REAL", nullable: true),
+                    Kerosene = table.Column<double>(type: "REAL", nullable: true),
+                    Petrol = table.Column<double>(type: "REAL", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FuelPrices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FuelPrices_Stations_StationId",
+                        column: x => x.StationId,
+                        principalTable: "Stations",
+                        principalColumn: "StationId");
+                });
+
             migrationBuilder.InsertData(
                 table: "Tags",
                 columns: new[] { "TagId", "Amenity", "Brand", "City", "Name", "Operator", "Street" },
@@ -60,6 +84,16 @@ namespace projects.Migrations
                 columns: new[] { "StationId", "Lat", "LocationType", "Lon", "TagId" },
                 values: new object[] { 30092081, -1.2990005, "node", 36.759717299999998, 30092081 });
 
+            migrationBuilder.InsertData(
+                table: "FuelPrices",
+                columns: new[] { "Id", "CreatedAt", "Diesel", "FuelPriceId", "Kerosene", "Petrol", "StationId" },
+                values: new object[] { 1, new DateTime(2023, 11, 17, 0, 31, 30, 422, DateTimeKind.Utc).AddTicks(7640), 200.0, 30092081, 200.0, 200.0, 30092081 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FuelPrices_StationId",
+                table: "FuelPrices",
+                column: "StationId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Stations_TagId",
                 table: "Stations",
@@ -69,6 +103,9 @@ namespace projects.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "FuelPrices");
+
             migrationBuilder.DropTable(
                 name: "Stations");
 

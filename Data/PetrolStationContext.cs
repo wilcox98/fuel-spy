@@ -30,8 +30,11 @@ public class PetrolStationContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<Station>();
+        var id = 1;
+        modelBuilder.Entity<Station>().HasMany(e => e.FuelPrices);
+        modelBuilder.Entity<FuelPrice>();
+        //     .Property(e => e.Id)
+        // .ValueGeneratedOnAdd();
         Models.Station station = new()
         {
             StationId = 30092081,
@@ -40,6 +43,7 @@ public class PetrolStationContext : DbContext
             Lon = 36.7597173,
 
             TagId = 30092081,
+            // FuelPriceId = id
         };
         Models.Tag tag = new()
         {
@@ -54,7 +58,8 @@ public class PetrolStationContext : DbContext
 
         FuelPrice fuelPrice = new FuelPrice
         {
-            FuelPriceId = Guid.NewGuid().ToString(),
+            FuelPriceId = 30092081,
+            Id = id,
             StationId = 30092081,
             Diesel = 200,
             Kerosene = 200,

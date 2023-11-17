@@ -17,21 +17,30 @@ public class PricesController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Station> Get()
+    public IEnumerable<StationResponse> Get()
     {
         List<Station> stations = new List<Station>();
-        List<Station> newStations = new List<Station>();
+        List<StationResponse> newStations = new List<StationResponse>();
         using (var context = new PetrolStationContext())
         {
-            stations = context.Stations.ToList();
+            stations = context.Stations.Include(i => i.Tag).Include(i => i.FuelPrices).ToList();
 
 
 
             foreach (var station in stations)
             {
-                // get fuel price
-                var fuelPrice = context.FuelPrices.Where(i => i.StationId == station.StationId).OrderByDescending(p => p.CreatedAt)
-                       .FirstOrDefault();
+                // convert it to a response model
+                var latest = station.FuelPrices.Where(x => x.CreatedAt.HasValue).Max(r => r.CreatedAt)!.Value;
+                var res = new StationResponse
+                {
+
+                    Lat = station.Lat,
+                    Lon = station.Lon,
+                    StationId = station.StationId,
+                    Tags = station.Tag,
+                    FuelPrice = station.FuelPrices.Where(x => x.CreatedAt == latest).FirstOrDefault(),
+                };
+                newStations.Add(res);
 
 
             }
@@ -56,7 +65,7 @@ public class PricesController : ControllerBase
         Console.WriteLine(jsonData);
         FuelPrice fuelPrice = JsonSerializer.Deserialize<FuelPrice>(jsonData)!;
         fuelPrice.CreatedAt = DateTime.UtcNow;
-        fuelPrice.FuelPriceId = Guid.NewGuid().ToString();
+        // fuelPrice.FuelPriceId = Guid.NewGuid().ToString();
 
         using (var context = new PetrolStationContext())
         {
