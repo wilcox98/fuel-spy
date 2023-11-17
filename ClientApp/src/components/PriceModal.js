@@ -1,8 +1,9 @@
+import moment from "moment/moment";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 
-export const PriceModal = ({ town }) => {
+export const PriceModal = ({ station }) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -12,16 +13,19 @@ export const PriceModal = ({ town }) => {
 
   return (
     <div>
-      <strong>{town.tags.brand ?? town.tags.name}</strong>
-      <p>{town.tags["addr:street"]}</p>
-      <p>{town.tags["addr:city"]}</p>
+      {console.log(station)}
+      <strong>{station.tags.brand ?? station.tags.name}</strong>
+      <p>{station.tags["addr:street"]}</p>
+      <p>{station.tags["addr:city"]}</p>
       <div className="container alert alert-warning" style={{ width: 150 }}>
+        Updated: {moment(station.fuelPrice.createdAt).fromNow()}
+        <hr></hr>
         Petrol
-        <h6>198.98</h6>
+        <h6>{station.fuelPrice.petrol}</h6>
         Kerosene
-        <h6>198.98</h6>
+        <h6>{station.fuelPrice.kerosene}</h6>
         Diesel
-        <h6>198.98</h6>
+        <h6>{station.fuelPrice.diesel}</h6>
       </div>
 
       <Button variant="primary" onClick={handleShow}>
@@ -38,7 +42,7 @@ export const PriceModal = ({ town }) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            <strong>{town.tags.brand ?? town.tags.name}</strong>
+            <strong>{station.tags.brand ?? station.tags.name}</strong>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
