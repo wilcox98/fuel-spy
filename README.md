@@ -5,6 +5,10 @@ Live fuel price reporting
 To setup the application, you'll neet to have .Net kit and node installed
 
 ### dotnet CLI
+Setup the database
+```bash
+$ dotnet ef database update
+```
 ```bash
 $ dotnet restore
 $ dotnet run 
