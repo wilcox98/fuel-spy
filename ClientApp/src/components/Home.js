@@ -2,11 +2,11 @@ import { Container } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 
 import React from "react";
-import axios from "axios";
 import { MapView } from "./Map";
 import FuelDropdown from "./FuelDropdown";
 export class Home extends React.Component {
   state = {
+    stations: [],
     towns: [
       {
         Diesel: 115.6,
@@ -19,24 +19,20 @@ export class Home extends React.Component {
     ],
     avg: [],
   };
-  // componentDidMount() {
-  //   axios
-  //     .get(`http://127.0.0.1:5000/towns`)
-  //     .then((res) => {
-  //       const towns = res.data;
-  //       //    console.log(towns)
-  //       this.setState({ towns });
-  //     })
-  //     .catch((error) => console.log(error));
-  //   axios
-  //     .get(`http://localhost:5000/towns/average`)
-  //     .then((res) => {
-  //       const avg = res.data;
-  //       //    console.log(towns)
-  //       this.setState({ avg });
-  //     })
-  //     .catch((error) => console.log(error));
-  // }
+  componentDidMount() {
+    fetch("/prices")
+      .then((response) => {
+        var res = response.json();
+        return res;
+      })
+      .then((data) => {
+        // console.log(data);
+
+        this.setState({ stations: data });
+      })
+      .catch((e) => console.log(e));
+  }
+
   render() {
     return (
       <Container>
@@ -56,7 +52,7 @@ export class Home extends React.Component {
           </div>
           <div className="row">
             <div className="col-md-12">
-              <MapView towns={this.state.towns}></MapView>
+              <MapView stations={this.state.stations}></MapView>
             </div>
           </div>
         </div>
