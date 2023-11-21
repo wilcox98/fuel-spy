@@ -1,52 +1,61 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Numerics;
 using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 namespace projects.Models;
 public class Station
 {
-    [JsonPropertyName("id")]
-    public int StationId { get; set; }
-    [JsonPropertyName("type")]
+    [JsonProperty("id")]
+    public long Id { get; set; }
+    [JsonProperty("type")]
     public string? LocationType { get; set; }
-    [JsonPropertyName("lon")]
+    [JsonProperty("lat")]
     public double Lat { get; set; }
-    [JsonPropertyName("lat")]
+    [JsonProperty("lon")]
     public double Lon { get; set; }
-    [JsonPropertyName("tags")]
-    public virtual Tag? Tag { get; set; }
-    // [JsonPropertyName("id")]
-    public required int TagId { get; set; }
 
-    // [JsonPropertyName("id")]
-    // public required int FuelPriceId { get; set; }
-    public ICollection<FuelPrice> FuelPrices { get; } = new List<FuelPrice>();
+    public int? TagId { get; set; }
+    [JsonProperty("tags")]
+    public virtual Tag? Tag { get; set; }
+
+
+    public IList<FuelPrice> FuelPrices { get; } = new List<FuelPrice>();
 }
 public class Tag
 {
-    public int? TagId { get; set; }
-    [JsonPropertyName("addr:city")]
+
+    public long? StationId { get; set; }
+    [Key]
+    [ForeignKey("TagId")]
+    public int? Id { get; set; }
+    [JsonProperty("addr:city")]
     public string? City { get; set; }
-    [JsonPropertyName("addr:street")]
+    [JsonProperty("addr:street")]
     public string? Street { get; set; }
-    [JsonPropertyName("amenity")]
+    [JsonProperty("amenity")]
     public string? Amenity { get; set; }
-    [JsonPropertyName("brand")]
+    [JsonProperty("brand")]
     public string? Brand { get; set; }
-    [JsonPropertyName("name")]
+    [JsonProperty("name")]
     public string? Name { get; set; }
-    [JsonPropertyName("operator")]
+    [JsonProperty("operator")]
     public string? Operator { get; set; }
 
 }
 public class FuelPrice
 {
+    [Key]
     public int? Id { get; set; }
-    public int FuelPriceId { get; set; }
-    [JsonPropertyName("stationId")]
-    public int? StationId { get; set; }
-    [JsonPropertyName("diesel")]
+
+    [JsonProperty("stationId")]
+    [ForeignKey("Station")]
+    public long StationId { get; set; }
+    [JsonProperty("diesel")]
     public double? Diesel { get; set; }
-    [JsonPropertyName("kerosene")]
+    [JsonProperty("kerosene")]
     public double? Kerosene { get; set; }
-    [JsonPropertyName("petrol")]
+    [JsonProperty("petrol")]
     public double? Petrol { get; set; }
     public DateTime? CreatedAt { get; set; }
 
