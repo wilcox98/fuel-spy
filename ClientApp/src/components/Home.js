@@ -1,64 +1,54 @@
 import { Container } from "react-bootstrap";
-import Form from "react-bootstrap/Form";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MapView } from "./Map";
-import FuelDropdown from "./FuelDropdown";
-export class Home extends React.Component {
-  state = {
-    stations: [],
-    towns: [
-      {
-        Diesel: 115.6,
-        Kerosene: 103.54,
-        Super: 134.72,
-        Town: "Nairobi",
-        lat: -1.30261485,
-        lon: 36.8288420181,
-      },
-    ],
-    avg: [],
-  };
-  componentDidMount() {
-    fetch("/prices")
-      .then((response) => {
-        var res = response.json();
-        return res;
-      })
-      .then((data) => {
-        // console.log(data);
-
-        this.setState({ stations: data });
-      })
-      .catch((e) => console.log(e));
-  }
-
-  render() {
-    return (
-      <Container>
-        <div className="container">
-          <div className="row">
+import { FuelDropdown } from "./FuelDropdown";
+// TODO use Effect
+export const Home = () => {
+  const [stations, setStations] = useState([]);
+  const [town, setTown] = useState([]);
+  const [fuelType, setFuelType] = useState("Super");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/prices`);
+        const newData = await response.json();
+        setStations(newData);
+      } catch (error) {
+        console.log("An error occured: ", error);
+      }
+    };
+    fetchData();
+  });
+  return (
+    <Container>
+      <div className="container">
+        <div className="p-4">
+          <form className="row g-2">
             <div className="col-md-6">
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Control type="text" placeholder="Town" />
-              </Form.Group>
+              <label htmlFor="inputPassword2" className="visually-hidden">
+                Town
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="town"
+                placeholder="Town"
+                value={town}
+                onChange={(e) => setTown(e.target.value)}
+              ></input>
             </div>
             <div className="col-md-6">
-              <FuelDropdown />
+              <FuelDropdown fuelType={fuelType} setFuelType={setFuelType} />
             </div>
-          </div>
-          <div className="row">
-            <div className="col-md-12">
-              <MapView stations={this.state.stations}></MapView>
-            </div>
+          </form>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <MapView stations={stations} fuelType={fuelType}></MapView>
           </div>
         </div>
-      </Container>
-    );
-  }
-}
-
-export default Home;
+      </div>
+    </Container>
+  );
+};
