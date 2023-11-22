@@ -1,29 +1,17 @@
-import { useState } from "react";
-import Dropdown from "react-dropdown";
-
-function FuelDropdown() {
-  const [fuel, setFuel] = useState();
+export const FuelDropdown = ({ fuelType, setFuelType }) => {
   const fuelTypes = ["Super", "Diesel", "Kerosene"];
-  const handleSelectFuel = (option) => {
-    console.log(option);
-    setFuel(option.value);
-  };
+
   return (
-    // <Dropdown
-    //   className="form-select"
-    //   options={fuelTypes}
-    //   onChange={handleSelectFuel}
-    //   value={fuel}
-    //   placeholder="Select an option"
-    // />
-    <select className="form-select">
+    <select
+      className="form-select"
+      value={fuelType}
+      onChange={(e) => setFuelType(e.target.value)}
+    >
       {fuelTypes.map((fuel, index) => (
-        <option onSelect={handleSelectFuel} key={index} value={fuel}>
+        <option value={fuel} key={index}>
           {fuel}
         </option>
       ))}
     </select>
   );
-}
-
-export default FuelDropdown;
+};
