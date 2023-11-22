@@ -47,9 +47,7 @@ public class FuelPrice
 {
     [Key]
     public int? Id { get; set; }
-
     [JsonProperty("stationId")]
-    [ForeignKey("Station")]
     public long StationId { get; set; }
     [JsonProperty("diesel")]
     public double? Diesel { get; set; }

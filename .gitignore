@@ -93,3 +93,4 @@ yarn-error.log*
 ClientApp/src/components/Map.js
 ClientApp/src/components/location.json
 jsconfig.json
+*.session.sql

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using projects.Data;
 using projects.Models;
 namespace projects.Controllers;
@@ -21,6 +22,7 @@ public class PricesController : ControllerBase
     {
         List<Station> stations = new List<Station>();
         List<StationResponse> newStations = new List<StationResponse>();
+
         using (var context = new PetrolStationContext())
         {
             stations = context.Stations.Include(i => i.Tag).Include(i => i.FuelPrices).ToList();
@@ -30,15 +32,15 @@ public class PricesController : ControllerBase
             foreach (var station in stations)
             {
                 // convert it to a response model
-                var latest = station.FuelPrices.Where(x => x.CreatedAt.HasValue).Max(r => r.CreatedAt)!.Value;
+                DateTime? latest = station.FuelPrices.Where(x => x.CreatedAt.HasValue).Max(r => r.CreatedAt);
                 var res = new StationResponse
                 {
 
                     Lat = station.Lat,
                     Lon = station.Lon,
-                    StationId = station.StationId,
+                    StationId = (double)station.Id,
                     Tags = station.Tag,
-                    FuelPrice = station.FuelPrices.Where(x => x.CreatedAt == latest).FirstOrDefault(),
+                    FuelPrice = latest != null ? station.FuelPrices.Where(x => x.CreatedAt == latest).FirstOrDefault() : null,
                 };
                 newStations.Add(res);
 
@@ -60,11 +62,17 @@ public class PricesController : ControllerBase
         return fuelPrice;
     }
     [HttpPost]
-    public FuelPrice Post([FromBody] dynamic jsonData)
+    public FuelPrice Post([FromBody] FuelPrice jsonData)
     {
-        Console.WriteLine(jsonData);
-        FuelPrice fuelPrice = JsonSerializer.Deserialize<FuelPrice>(jsonData)!;
-        fuelPrice.CreatedAt = DateTime.UtcNow;
+
+        FuelPrice fuelPrice = new FuelPrice
+        {
+            StationId = jsonData.StationId,
+            Petrol = jsonData.Petrol,
+            Diesel = jsonData.Diesel,
+            Kerosene = jsonData.Kerosene,
+            CreatedAt = DateTime.UtcNow
+        };
         // fuelPrice.FuelPriceId = Guid.NewGuid().ToString();
 
         using (var context = new PetrolStationContext())
