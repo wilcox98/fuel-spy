@@ -4,10 +4,18 @@ import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 export const PriceModal = ({ station }) => {
   const [show, setShow] = useState(false);
-  const [diesel, setDiesel] = useState(station.fuelPrice.diesel);
-  const [petrol, setPetrol] = useState(station.fuelPrice.petrol);
-  const [kerosene, setKerosene] = useState(station.fuelPrice.kerosene);
-  const [createdAt, setCreatedAt] = useState(station.fuelPrice.createdAt);
+  const [diesel, setDiesel] = useState(
+    station.fuelPrice ? station.fuelPrice.diesel : 0
+  );
+  const [petrol, setPetrol] = useState(
+    station.fuelPrice ? station.fuelPrice.petrol : 0
+  );
+  const [kerosene, setKerosene] = useState(
+    station.fuelPrice ? station.fuelPrice.kerosene : 0
+  );
+  const [createdAt, setCreatedAt] = useState(
+    station.fuelPrice ? station.fuelPrice.createdAt : null
+  );
 
   const handleClose = () => setShow(false);
   const [pending, setPending] = useState(false);
@@ -50,15 +58,19 @@ export const PriceModal = ({ station }) => {
   const handleShow = () => {
     setShow(true);
   };
-
+  let lastUpdated;
+  if (createdAt !== null) {
+    lastUpdated = `Updated: ${moment(createdAt).fromNow()}`;
+  } else {
+  }
   return (
     <div>
-      {console.log(station)}
+      {/* {console.log(station)} */}
       <strong>{station.tags.brand ?? station.tags.name}</strong>
       <p>{station.tags["addr:street"]}</p>
       <p>{station.tags["addr:city"]}</p>
       <div className="container alert alert-warning" style={{ width: 150 }}>
-        Updated: {moment(createdAt).fromNow()}
+        {lastUpdated}
         <hr></hr>
         Petrol
         <h6>{petrol}/=</h6>
