@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using projects.Models;
-namespace projects.Data;
+using Server.Api.Models;
+
+
+namespace Server.Api.Data;
 public class PetrolStationContext : DbContext
 {
     public DbSet<Station> Stations { get; set; }

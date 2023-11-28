@@ -2,9 +2,10 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using projects.Data;
-using projects.Models;
-namespace projects.Controllers;
+using Server.Api.Data;
+using Server.Api.Models;
+
+namespace Server.Api.Controllers;
 
 [ApiController]
 [Route("prices")]

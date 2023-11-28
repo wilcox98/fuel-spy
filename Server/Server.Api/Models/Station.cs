@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Numerics;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
-namespace projects.Models;
+namespace Server.Api.Models;
 public class Station
 {
     [JsonProperty("id")]

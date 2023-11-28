@@ -1,4 +1,4 @@
-namespace projects.Models;
+namespace Server.Api.Models;
 public class StationResponse
 {
     // public Station? Station { get; set; }
