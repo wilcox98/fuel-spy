@@ -8,9 +8,10 @@ export default function Page() {
   const [stations, setStations] = useState([]);
   const [town, setTown] = useState("");
   const [fuelType, setFuelType] = useState("Super");
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   useEffect(() => {
     axios
-      .get(`https://localhost:5001/prices`)
+      .get(BASE_URL + "prices")
       .then((res) => {
         const newData = res.data;
         // console.log(newData);

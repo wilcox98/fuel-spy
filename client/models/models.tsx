@@ -17,6 +17,7 @@ export interface Tags {
   operator: any;
 }
 export interface FuelPrice {
+  createdAt: any;
   petrol: number;
   kerosene: number;
   diesel: number;

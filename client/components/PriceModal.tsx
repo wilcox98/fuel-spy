@@ -1,9 +1,11 @@
+import { Station } from "@/models/models";
 import axios from "axios";
 import moment from "moment/moment";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 export const PriceModal = ({ station }) => {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const [show, setShow] = useState(false);
   const [diesel, setDiesel] = useState(
     station.fuelPrice ? station.fuelPrice.diesel : 0
@@ -34,7 +36,7 @@ export const PriceModal = ({ station }) => {
     };
 
     axios
-      .post(`https://localhost:5001/prices`, {
+      .post(BASE_URL + "prices", {
         stationId: station.stationId,
         diesel: parseFloat(diesel),
         petrol: parseFloat(petrol),
