@@ -1,21 +1,22 @@
-using System.Text.Json;
+using Api.Data;
+using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Server.Api.Data;
-using Server.Api.Models;
 
-namespace Server.Api.Controllers;
+namespace Api.Controllers;
 
 [ApiController]
 [Route("prices")]
 public class PricesController : ControllerBase
 {
     private readonly ILogger<PricesController> _logger;
-
-    public PricesController(ILogger<PricesController> logger)
+    private readonly PetrolStationContext _context;
+    private readonly IConfiguration Configuration;
+    public PricesController(ILogger<PricesController> logger, PetrolStationContext context, IConfiguration configuration)
     {
         _logger = logger;
+        _context = context;
+        Configuration = configuration;
     }
     /// <summary>
     /// Gets list of all stations
@@ -27,7 +28,7 @@ public class PricesController : ControllerBase
         List<Station> stations = new List<Station>();
         List<StationResponse> newStations = new List<StationResponse>();
 
-        using (var context = new PetrolStationContext())
+        using (var context = new PetrolStationContext(Configuration))
         {
             stations = context.Stations.Include(i => i.Tag).Include(i => i.FuelPrices).ToList();
 
@@ -42,7 +43,7 @@ public class PricesController : ControllerBase
 
                     Lat = station.Lat,
                     Lon = station.Lon,
-                    StationId = (double)station.Id,
+                    StationId = station.Id,
                     Tags = station.Tag,
                     FuelPrice = latest != null ? station.FuelPrices.Where(x => x.CreatedAt == latest).FirstOrDefault() : null,
                 };
@@ -60,14 +61,14 @@ public class PricesController : ControllerBase
 
         try
         {
-            using (var context = new PetrolStationContext())
+            using (var context = new PetrolStationContext(Configuration))
             {
                 fuelPrice = context.FuelPrices.Where(e => e.StationId == stationId).First();
 
             }
             return fuelPrice;
         }
-        catch (System.Exception e)
+        catch (Exception e)
         {
             // _logger.LogError(e);
             return fuelPrice;
@@ -104,7 +105,7 @@ public class PricesController : ControllerBase
         };
         // fuelPrice.FuelPriceId = Guid.NewGuid().ToString();
 
-        using (var context = new PetrolStationContext())
+        using (var context = new PetrolStationContext(Configuration))
         {
             context.FuelPrices.Add(fuelPrice);
             context.SaveChanges();

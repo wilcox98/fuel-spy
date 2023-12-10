@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  api:
+    image: ${DOCKER_REGISTRY-}api
+    build:
+      context: .
+      dockerfile: Server.Api/Dockerfile
+    ports:
+      - "127.0.0.1:5001:443" 
+      - "127.0.0.1:5000:80"
+      - "6002:6002"
+      - "6001:6001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=6001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=mypass123
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+        - ./https/aspnetapp.pfx:/https/aspnetapp.pfx:ro

@@ -1,8 +1,7 @@
-
-using Xunit;
+using Api.Controllers;
+using Api.Data;
+using Microsoft.Extensions.Logging;
 using Moq;
-
-
 namespace Tests;
 public class TestPriceController
 {
@@ -11,7 +10,8 @@ public class TestPriceController
     {
 
         var station = new Mock<PetrolStationContext>();
-        var controller = new PricesController(station.Object);
+        var logger = new Mock<ILogger<PricesController>>(MockBehavior.Strict);
+        var controller = new PricesController(logger.Object, station.Object);
         // act
         var result = controller.Get();
         Assert.Equal(1, 1);

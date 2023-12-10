@@ -1,36 +1,41 @@
-
-using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Server.Api.Models;
 
 
-namespace Server.Api.Data;
+namespace Api.Data;
 public class PetrolStationContext : DbContext
 {
-    public DbSet<Station> Stations { get; set; }
-    public DbSet<Tag> Tags { get; set; }
-    public DbSet<FuelPrice> FuelPrices { get; set; }
 
-    public string DbPath { get; }
-    public PetrolStationContext() : base()
+    protected readonly IConfiguration Configuration;
+
+    public PetrolStationContext(IConfiguration configuration)
     {
-        var folder = "/home/chefnoid/Desktop/learning/projects/"
-        ;
-        // var path = Environment.GetFolderPath(folder);
-        DbPath = System.IO.Path.Join(folder, "stations.db");
-        // Database.SetInitializer<PetrolStationContext>(new CreateDatabaseIfNotExists<PetrolStationContext>());
+        Configuration = configuration;
     }
+    // public string DbPath { get; }
+    // public PetrolStationContext() : base()
+    //  {
+    //var folder = "/home/chefnoid/Desktop/learning/projects/"
+    //;
+    //   var folder = Environment.SpecialFolder.LocalApplicationData;
+    //   var path = Environment.GetFolderPath(folder);
+    //   DbPath = Path.Join(path, "stations.db");
+    // Database.SetInitializer<PetrolStationContext>(new CreateDatabaseIfNotExists<PetrolStationContext>());
+    //}
 
     // The following configures EF to create a Sqlite database file in the
     // special "local" folder for your platform.
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        options.UseSqlite($"Data Source={DbPath}");
+        options.UseSqlite(Configuration.GetConnectionString("WebApiDatabase")); ;
         options.EnableSensitiveDataLogging();
     }
+    public DbSet<Station> Stations { get; set; }
+    public DbSet<Tag> Tags { get; set; }
+    public DbSet<FuelPrice> FuelPrices { get; set; }
+
+
     public void LoadJson()
     {
         using (StreamReader r = new StreamReader("interpreter.json"))

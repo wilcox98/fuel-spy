@@ -5,29 +5,26 @@ ARG TARGETARCH
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
-# EXPOSE 5001
+EXPOSE 5000
+EXPOSE 5001
 
-FROM base AS debug
-RUN apt install procps-ng -y
-
-
+# FROM base AS debug
 FROM --platform=$BUILDPLATFORM  mcr.microsoft.com/dotnet/sdk:7.0-bookworm-slim AS build
-
+ARG BUILD_CONFIGURATION=Development
 WORKDIR /src
-COPY ["Server.csproj", "."]
-RUN dotnet restore "Server.csproj"
-
-COPY . .
+COPY ["Server.Api/Api.csproj", "."]
+RUN dotnet restore "Api.csproj"
+COPY ["Server.Api/", "."]
 WORKDIR "/src/."
-RUN dotnet build "Server.csproj"  -c Release -o /app/build
+RUN dotnet tool install --global dotnet-ef --version 7
+RUN dotnet ef database update
+RUN dotnet build "Api.csproj"  -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Server.csproj"  -c Release -o /app/publish /p:UseAppHost=false
+ARG BUILD_CONFIGURATION=Development
+RUN dotnet publish "Api.csproj"  -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
-RUN dotnet dev-certs https --trust
-RUN  dotnet dev-certs https -ep /usr/local/share/ca-certificates/aspnet/https.crt --format PEM
-RUN  update-ca-certificates
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Server.dll"]
+ENTRYPOINT ["dotnet", "Api.dll"]
