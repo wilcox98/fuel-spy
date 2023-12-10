@@ -10,7 +10,7 @@ EXPOSE 5001
 
 # FROM base AS debug
 FROM --platform=$BUILDPLATFORM  mcr.microsoft.com/dotnet/sdk:7.0-bookworm-slim AS build
-ARG BUILD_CONFIGURATION=Development
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 COPY ["Server.Api/Api.csproj", "."]
@@ -25,7 +25,7 @@ RUN dotnet tool install --global dotnet-ef --version 7
 RUN export PATH="$PATH:/root/.dotnet/tools"
 # RUN dotnet ef database update
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Development
+ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "Api.csproj"  -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
