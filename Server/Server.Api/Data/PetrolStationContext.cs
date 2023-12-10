@@ -9,23 +9,13 @@ public class PetrolStationContext : DbContext
 
     protected readonly IConfiguration Configuration;
 
-    public PetrolStationContext(IConfiguration configuration)
+    public PetrolStationContext(IConfiguration configuration) : base()
     {
         Configuration = configuration;
-    }
-    // public string DbPath { get; }
-    // public PetrolStationContext() : base()
-    //  {
-    //var folder = "/home/chefnoid/Desktop/learning/projects/"
-    //;
-    //   var folder = Environment.SpecialFolder.LocalApplicationData;
-    //   var path = Environment.GetFolderPath(folder);
-    //   DbPath = Path.Join(path, "stations.db");
-    // Database.SetInitializer<PetrolStationContext>(new CreateDatabaseIfNotExists<PetrolStationContext>());
-    //}
 
-    // The following configures EF to create a Sqlite database file in the
-    // special "local" folder for your platform.
+        Database.EnsureCreated();
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         options.UseSqlite(Configuration.GetConnectionString("WebApiDatabase")); ;

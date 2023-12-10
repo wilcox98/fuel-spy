@@ -12,14 +12,18 @@ EXPOSE 5001
 FROM --platform=$BUILDPLATFORM  mcr.microsoft.com/dotnet/sdk:7.0-bookworm-slim AS build
 ARG BUILD_CONFIGURATION=Development
 WORKDIR /src
+
 COPY ["Server.Api/Api.csproj", "."]
+COPY ["Server.Api/LocalDatabase.db", "."]
 RUN dotnet restore "Api.csproj"
 COPY ["Server.Api/", "."]
 WORKDIR "/src/."
-RUN dotnet tool install --global dotnet-ef --version 7
-RUN dotnet ef database update
-RUN dotnet build "Api.csproj"  -c $BUILD_CONFIGURATION -o /app/build
+# RUN dotnet new tool-manifest
 
+RUN dotnet build "Api.csproj"  -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet tool install --global dotnet-ef --version 7
+RUN export PATH="$PATH:/root/.dotnet/tools"
+# RUN dotnet ef database update
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Development
 RUN dotnet publish "Api.csproj"  -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
