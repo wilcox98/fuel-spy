@@ -14,7 +14,7 @@ namespace Api
             {
                 builder
                        .AllowAnyMethod()
-                       .AllowAnyHeader();
+                       .AllowAnyHeader().AllowAnyOrigin();
             }));
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
