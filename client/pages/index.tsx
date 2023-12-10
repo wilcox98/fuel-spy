@@ -43,7 +43,12 @@ export default function Page() {
       </div>
       <div className="row">
         <div className="col-md-12">
-          <Map stations={stations} fuelType={fuelType}></Map>
+          <Map
+            stations={stations}
+            fuelType={fuelType}
+            zoom={13}
+            center={[-1.286389, 36.817223]}
+          ></Map>
         </div>
       </div>
     </div>

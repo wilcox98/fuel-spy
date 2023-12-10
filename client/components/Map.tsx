@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
+import L, { LatLngExpression } from "leaflet";
 import React, { useEffect, useState } from "react";
 // import fuel from "./../fuel-station.png";
 import { PriceModal } from "./PriceModal";
@@ -12,7 +12,13 @@ const MapView = ({
   center = [-1.286389, 36.817223],
   fuelType,
   stations,
+}: {
+  center: LatLngExpression;
+  zoom: number;
+  fuelType: string;
+  stations: never[];
 }) => {
+  // var center: [number, number][] = [[-1.286389, 36.817223]];
   const [_zoom, setZoom] = useState(zoom);
   let priceWidget;
   var selectedFuelType: number;
