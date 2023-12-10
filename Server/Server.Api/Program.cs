@@ -1,4 +1,5 @@
 using Api.Data;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Api
 {
@@ -11,7 +12,7 @@ namespace Api
             // Add services to the container.
             builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
-                builder.WithOrigins("http://localhost:3000")
+                builder
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
@@ -29,8 +30,14 @@ namespace Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            app.UseHttpsRedirection();
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             app.UseCors("CorsPolicy");
             app.UseAuthorization();
 
